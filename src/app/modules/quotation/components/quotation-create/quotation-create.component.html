@@ -1,0 +1,306 @@
+<!-- REQUISITION -->
+<div class="card">
+    <p-toolbar styleClass="p-mb-6">
+        <ng-template pTemplate="left">
+            <h4>Datos de la requisición</h4>
+        </ng-template>
+        <ng-template pTemplate="right">
+            <button pButton pRipple label="Guardar" icon="pi pi-save"
+                (click)="saveQuotations()" class="p-button-success"
+                tooltipPosition="bottom">
+            </button>
+        </ng-template>
+    </p-toolbar>
+    <table id="requisition_table" class="table table-bordered">
+        <thead class="table-light">
+            <tr>
+                <th style="width: 80px;">Cons.</th>
+                <th style="width: 100px;">Receta</th>
+                <th style="width: 200px;">Paciente</th>
+                <th style="width: 140px;">RFC</th>
+                <th style="width: 300px;">Medicamento</th>
+                <th style="width: 100px;">Cantidad</th>
+                <th style="width: 140px;">Fecha</th>
+                <th style="width: 100px;">Rastreo</th>
+                <th style="width: 160px;">Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td style="width: 80px;">{{requisitionSerialized.consecutive}}</td>
+                <td style="width: 100px;">{{requisitionSerialized.serie}}</td>
+                <td style="width: 200px;">{{requisitionSerialized.patientName}}</td>
+                <td style="width: 140px;">{{requisitionSerialized.rfc}}</td>
+                <td style="width: 300px;">{{requisitionSerialized.description}}</td>
+                <td style="width: 100px;">{{requisitionSerialized.quantity}}</td>
+                <td style="width: 140px;">{{requisitionSerialized.date}}</td>
+                <td style="width: 100px;">{{requisitionSerialized.trackingNumber}}</td>
+                <td style="width: 160px;">{{requisitionSerialized.status}}
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- ADD QUOTATION FORM -->
+    <h4>Nueva cotización</h4>
+    <form name="quotationForm" style="margin-top: 20px; margin-bottom: 20px;"
+        #quotationForm="ngForm">
+        <div class="form-row" style="margin-left: 10px; margin-right: 10px;">
+            <div class="col-sm-1">
+                <div class="form-group">
+                    <label for="folio" class="label">FOLIO</label>
+                    <input id="folio" name="text_folio"
+                        class="form-control quotation" required
+                        [(ngModel)]="quotation.folio" #folio="ngModel">
+                    <div *ngIf="folio.invalid && submittedAdd" class="alert alert-danger">
+                        <div *ngIf="folio.errors!['required']">
+                            Campo requerido.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-2">
+                <div class="form-group">
+                    <label for="price" class="label">Precio</label>
+                    <input id="price" name="price"
+                        class="form-control quotation" type="number" required
+                        [(ngModel)]="quotation.price" #price="ngModel">
+                    <div *ngIf="price.invalid && submittedAdd" class="alert alert-danger">
+                        <div *ngIf="price.errors!['required']">
+                            Campo requerido.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label for="name" class="label">Proveedor</label>
+                    <div class="input-group col-mb-2">
+                        <input id="name" name="name"
+                            class="form-control quotation" type="text"
+                            style="text-transform: uppercase;" required
+                            [(ngModel)]="supplier.name" #name="ngModel"
+                            (ngModelChange)="supplier.name = $event.toUpperCase()">
+                        <div class="input-group-prepend">
+                            <a id="supplier" name="supplier"
+                                class="btn btn-outline-secondary fa fa-search"
+                                rol="button"
+                                (click)="findAllByLikeName()">
+                            </a>
+                            <a id="supplier" name="supplier"
+                                class="btn btn-outline-primary"
+                                rol="button"
+                                (click)="showNewDialog()">NUEVO
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-2">
+                <div class="form-group">
+                    <label for="rfc" class="label">RFC</label>
+                    <input id="rfc" name="rfc"
+                        class="form-control" type="text" disabled
+                        style="text-transform: uppercase;"
+                        [(ngModel)]="supplier.rfc" #rfc="ngModel">
+                </div>
+            </div>
+            <div class="col-sm-1">
+                <button class="btn btn-primary fa fa-check-square-o"
+                    style="margin-top: 40px; height: 50px;"
+                    (click)="addQuotation(quotationForm)">
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- QUOTATIONS TO ADD -->
+<h4>Cotizaciones para agregar</h4>
+<div class="card">
+    <p-table #dt [value]="quotationsOld"
+        [filterDelay]="0" [rowHover]="true" dataKey="folio"
+        styleClass="p-datatable-striped p-datatable-responsive-demo p-datatable-sm">
+        <ng-template pTemplate="header">
+            <tr>
+                <th>Folio</th>
+                <th>Precio</th>
+                <th>Nombre del proveedor</th>
+                <th>RFC</th>
+                <th>Teléfono</th>
+                <th>Opciones</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-quotation>
+            <tr>
+                <td>{{quotation.folio}}</td>
+                <td>{{quotation.price}}</td>
+                <td>{{quotation.supplier.name}}</td>
+                <td>{{quotation.supplier.rfc}}</td>
+                <td>{{quotation.supplier.phone}}</td>
+                <td>
+                    <a id="update" name="button_update"
+                        class="btn btn-outline-warning fa fa-pencil"
+                        rol="button"
+                        (click)="loadEditForm(quotation)">
+                    </a>
+                    <a id="delete" name="button_delete"
+                        class="btn btn-outline-danger fa fa-trash"
+                        rol="button"
+                        style="margin-left: 10px;"
+                        (click)="delete(quotation)">
+                    </a>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
+
+<!-- DIALOG TABLE SUPPLIERS -->
+<p-dialog [(visible)]="showTableSupplierDialog" [style]="{width: '1200px'}" header="PROVEEDORES" [modal]="true"
+    styleClass="p-fluid">
+    <p-table #dt [value]="suppliers" [rows]="5" [paginator]="true" [rowsPerPageOptions]="[5,10,25,50]" [filterDelay]="0"
+        [globalFilterFields]="['id', 'name', 'rfc']" selectionMode="single" [(selection)]="selectedSupplier"
+        [rowHover]="true" dataKey="id"
+        currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} registros"
+        [showCurrentPageReport]="true" (onRowSelect)="onRowSelect($event)" (onRowUnselect)="onRowUnselect($event)"
+        styleClass="p-datatable-responsive-demo p-datatable-sm">
+        <ng-template pTemplate="header">
+            <tr>
+                <th pSortableColumn="name">
+                    Nombre<p-sortIcon field="name"></p-sortIcon>
+                </th>
+                <th>RFC</th>
+                <th>Representante legal</th>
+                <th>Telefóno</th>
+                <th>Email</th>
+                <th>Notas</th>
+                <th style="width: 10%">Opciones</th>
+            </tr>
+            <tr>
+                <th>
+                    <span class="p-input-icon-left" style="width: 100%">
+                        <i class="pi pi-search"></i>
+                        <input pInputText type="text" class="p-column-filter" style="width: 100%"
+                            (input)="dt.filter($any($event.target).value, 'name', 'contains')">
+                    </span>
+                </th>
+                <th>
+                    <span class="p-input-icon-left" style="width: 100%">
+                        <i class="pi pi-search"></i>
+                        <input pInputText type="text" class="p-column-filter" style="width: 100%"
+                            (input)="dt.filter($any($event.target).value, 'rfc', 'contains')">
+                    </span>
+                </th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th style="width: 10%">&nbsp;</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-supplier>
+            <tr [pSelectableRow]="supplier">
+                <td>{{supplier.name}}</td>
+                <td>{{supplier.rfc}}</td>
+                <td>{{supplier.legalRepresentative}}</td>
+                <td>{{supplier.phone}}</td>
+                <td>{{supplier.email}}</td>
+                <td>{{supplier.notes}}</td>
+                <td style="width: 10%">
+                    <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-primary p-mr-2"
+                        (click)="editSupplier(supplier)">
+                    </button>
+                    <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger"
+                        (click)="deleteSupplier(supplier)">
+                    </button>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</p-dialog>
+
+<!-- DIALOG CREATE SUPPLIER -->
+<p-dialog [(visible)]="showNewSupplierDialog" [style]="{width: '850px'}" header="DATOS DEL PROVEEDOR" [modal]="true"
+    styleClass="p-fluid">
+    <form #newSupplierForm="ngForm">
+        <div class="p-field">
+            <label for="name_dialog" class="dialog-label">Nombre</label>
+            <input id="name_dialog" class="dialog-field" type="text"
+                required autofocus
+                name="name_dialog" [(ngModel)]="newSupplier.name" #name="ngModel"
+                [ngModel]="newSupplier.name" 
+                (ngModelChange)="newSupplier.name = $event.toUpperCase()">
+            <div *ngIf="name.invalid && submittedNew" class="alert alert-danger">
+                <div *ngIf="name.errors!['required']">
+                    Dato requerido.
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="p-field">
+                    <label for="rfc_dialog" class="dialog-label">RFC</label>
+                    <input id="rfc_dialog" class="dialog-field" type="text"
+                        required pattern="[a-zA-Z]{4}[0-9]{6}[a-zA-Z0-9]{3}" placeholder="AAAA000000AAA"
+                        name="rfc_dialog" [(ngModel)]="newSupplier.rfc" #rfc="ngModel"
+                        [ngModel]="newSupplier.rfc" 
+                        (ngModelChange)="newSupplier.rfc = $event.toUpperCase()">
+                    <div *ngIf="rfc.invalid && submittedNew" class="alert alert-danger">
+                        <div *ngIf="rfc.errors!['required']">
+                            Dato requerido.
+                        </div>
+                        <div *ngIf="rfc.errors!['pattern']">
+                            Siga el formato AAAA000000 (4 letras, 6 números, 3 letras)
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="p-field">
+                    <label for="legalRepresentative" class="dialog-label">Representante legal</label>
+                    <input id="legalRepresentative" class="dialog-field" type="text" required
+                        name="legalRepresentative" [(ngModel)]="newSupplier.legalRepresentative" #legalRepresentative="ngModel"
+                        [ngModel]="newSupplier.legalRepresentative" 
+                        (ngModelChange)="newSupplier.legalRepresentative = $event.toUpperCase()">
+                    <div *ngIf="legalRepresentative.invalid && submittedNew" class="alert alert-danger">
+                        <div *ngIf="legalRepresentative.errors!['required']">
+                            Dato requerido.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="p-field">
+            <label for="phone_dialog" class="dialog-label">Teléfono</label>
+            <input id="phone_dialog" class="dialog-field" type="number" pattern="[0-9]+"
+                required
+                name="phone_dialog" [(ngModel)]="newSupplier.phone" #phone="ngModel">
+        </div>
+        <div class="p-field">
+            <label for="email_dialog" class="dialog-label">Email</label>
+            <input id="email_dialog" class="dialog-field" type="text" style="text-transform: lowercase;"
+                pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
+                name="email_dialog" [(ngModel)]="newSupplier.email" #email="ngModel">
+            <div *ngIf="email.invalid && submittedNew" class="alert alert-danger">
+                <div *ngIf="email.errors!['pattern']">
+                    El formato del email no es correcto. (Siga el formato email@empresa.dominio)
+                </div>
+            </div>
+        </div>
+        <div class="p-field">
+            <label for="notes_dialog" class="dialog-label">Observaciones</label>
+            <input id="notes_dialog" class="dialog-field" type="text" appUppercase
+                name="notes_dialog" [(ngModel)]="newSupplier.notes" #notes="ngModel"
+                [ngModel]="newSupplier.notes" 
+                (ngModelChange)="newSupplier.notes = $event.toUpperCase()">
+        </div>
+    </form>
+    <div class="p-grid p-nogutter p-justify-between">
+        <button pButton pRipple label="Cancelar" icon="pi pi-times"
+            class="p-button-text" (click)="hideNewDialog()"></button>
+        <button pButton pRipple label="Guardar" icon="pi pi-check"
+            class="p-button-text" (click)="saveSupplier(newSupplierForm)"></button>
+    </div>
+</p-dialog>
+<!-- DIALOG CONFIRM -->
+<p-confirmDialog [style]="{width: '850px'}"></p-confirmDialog>

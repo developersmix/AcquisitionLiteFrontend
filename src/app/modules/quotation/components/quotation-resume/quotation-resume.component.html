@@ -1,0 +1,74 @@
+<div class="card requisition">
+    <div class="d-flex search">
+        <input type="text" placeholder="Número de rastreo" id="number" [(ngModel)]="number">
+        <button class="btn btn-primary" (click)="searchRequisition()">Buscar</button>
+    </div> 
+</div>
+<div class="card" *ngIf="isVisible">
+    <div class="title">Detalles de la requisición</div>
+    <div class="info">
+        <div class="row">
+            <div class="col-4"> <span id="heading">Rastreo</span><br> <span id="details">{{requisitionSerialized.trackingNumber}}</span></div>
+            <div class="col-4"> <span id="heading">Consecutivo</span><br> <span id="details">{{requisitionSerialized.consecutive}}</span></div>
+            <div class="col-4 pull-right"><span id="heading">Receta serie</span><br><span id="details">{{requisitionSerialized.serie}}</span></div>
+        </div>
+        <div class="row">
+            <div class="col-6"> <span id="heading">Paciente</span><br> <span id="details">{{requisitionSerialized.patientName}}</span></div>
+            <div class="col-3 pull-right"><span id="heading">RFC</span><br><span id="details">{{requisitionSerialized.rfc}}</span></div>
+            <div class="col-3 pull-right"><span id="heading">Teléfono</span><br><span id="details">{{requisitionSerialized.phone}}</span></div>
+        </div>
+    </div>
+    <table id="requisition_table" class="table table-bordered">
+        <thead class="table-light">
+            <tr>
+                <th>ARTÍCULO</th>
+                <th>CANTIDAD</th>
+            </tr>
+        </thead>
+        <tbody class="context-menu-one">
+            <tr>
+                <td>{{requisitionSerialized.description}}</td>
+                <td>{{requisitionSerialized.quantity}}</td>
+            </tr>
+        </tbody>
+    </table>
+    <table id="quotation_table" class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Cotización</th>
+                <th>Proveedor</th>
+                <th>RFC</th>
+                <th>Teléfono</th>
+                <th>Correo</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let quotation of quotationSerializedList">
+                <td>$ {{quotation.price}}</td>
+                <td>{{quotation.supplierName}}</td>
+                <td>{{quotation.supplierRfc}}</td>
+                <td>{{quotation.supplierPhone}}</td>
+                <td>{{quotation.supplierEmail}}</td>
+            </tr>
+        </tbody>
+    </table>
+    <!--
+    <table id="quotation_table" class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Cotización 1</th>
+                <th>Cotización 2</th>
+                <th>Cotización 3</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{quotationPrices[0]}}</td>
+                <td>{{quotationPrices[1]}}</td>
+                <td>{{quotationPrices[2]}}</td>
+            </tr>
+        </tbody>
+    </table>
+    -->
+</div>
+

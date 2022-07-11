@@ -1,0 +1,114 @@
+/*  track bar */
+
+input {
+    padding-left: 20px;;
+}
+
+.card.requisition {
+    margin: auto;
+    //width: 100%;
+    //max-width: 700px;
+    padding: 20px;
+    box-shadow: 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    border-top: 3px solid rgb(252, 103, 49);
+    border-bottom: 3px solid rgb(252, 103, 49);
+    border-left: none;
+    border-right: none
+}
+
+.card.requisition input {
+    width: 85%;
+    border-radius: 5px;
+    border: 1px solid #0059ff;
+    margin-right: 20px;
+}
+
+.card {
+    //margin: auto;
+    //width: 100%;
+    //max-width: 700px;
+    padding: 20px;
+    box-shadow: 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    border-top: 3px solid rgb(252, 103, 49);
+    border-bottom: 3px solid rgb(252, 103, 49);
+    border-left: none;
+    border-right: none
+}
+
+.title {
+    color: rgb(252, 103, 49);
+    font-weight: 600;
+    margin-bottom: 20px;
+    padding: 0 8%;
+    font-size: initial
+}
+
+#details {
+    font-weight: 400
+}
+
+.info {
+    padding: 5% 8%
+}
+
+.info .col-5 {
+    padding: 0
+}
+
+#heading {
+    color: grey;
+    line-height: 6vh
+}
+
+#progressbar {
+    display: inline;
+    margin-bottom: 20px;
+    overflow: hidden;
+    color: rgb(252, 103, 49);
+    padding-left: 0px;
+    margin-top: 20px;
+}
+
+#progressbar li {
+    list-style-type: none;
+    font-size: x-small;
+    width: 150px;
+    float: left;
+    position: relative;
+    font-weight: 400;
+    color: rgb(160, 159, 159)
+}
+
+// dot on progressbar
+#progressbar .step:before {
+    content: '';
+    width: 10px;
+    height: 10px;
+    margin-left: 0px !important;
+}
+
+#progressbar li:before {
+    line-height: 35px;
+    display: block;
+    font-size: 12px;
+    background: #ddd;
+    border-radius: 50%;
+    margin: auto;
+    z-index: -1;
+}
+
+#progressbar li:after {
+    content: '';
+    height: 2px;
+    background: #ddd;
+    position: absolute;
+    left: 0%;
+    right: 0%;
+    top: 3px;
+    z-index: 1
+}
+
+#progressbar li.active:before,
+#progressbar li.active:after {
+    background: green;
+}

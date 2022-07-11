@@ -1,0 +1,39 @@
+/* ***** CARD ***** */
+
+.card {
+  padding: 20px;
+}
+  
+/* ***** FORM ***** */
+
+label {
+    color: #0099CC;
+}
+
+input {
+    text-transform: uppercase;
+}
+
+.d-flex {
+    margin-top: 10px;
+}
+
+.label {
+    margin-top: 5px;
+    text-align: left;
+}
+
+.p-grid.p-nogutter.p-justify-end {
+    margin-top: 40px;
+  }
+
+.ng-valid[required], .ng-valid.required  {
+  border-left: 5px solid #42A948; /* green */
+}
+
+.ng-invalid:not(form)  {
+  border-left: 5px solid #a94442; /* red */
+}
+
+
+

@@ -1,0 +1,253 @@
+<!-- ---------------------------------- -->
+<!-- -------------- DASHBOARD --------- -->
+<!-- ---------------------------------- -->
+<div class="dashboard-main-wrapper">
+    <!-- --------------------------------- -->
+    <!-- ------------- NAVBAR ------------ -->
+    <!-- --------------------------------- -->
+    <div class="dashboard-header">
+        <nav class="navbar navbar-expand-lg bg-white fixed-top">
+            <!-- ------------- GENERAL TOAST ----------- -->
+            <p-toast position="top-right" [baseZIndex]="5000"></p-toast>
+            <div class="d-flex navbar">
+                <div class="col logo">
+                    <img class="img-brand" src="../../../assets/images/logo128.png" alt="DMx">
+                </div>
+                <!--
+                <div class="col notification">
+                    <a class="nav-link" id="notification-bell" data-toggle="dropdown"
+                        aria-haspopup="true"  aria-expanded="false">
+                        <i class="fa fa-bell-o"></i>
+                        <span class="indicator-notification">{{requisitionsCreated}}</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-right notification-dropdown">
+                        <li>
+                            <div class="notification-title">Notificaciones recientes</div>
+                            <div class="notification-list">
+                                <div class="list-group" *ngFor="let activity of requisitionSerializedList">
+                                    <a href="#" class="list-group-item list-group-item-action">
+                                        <div class="notification-list-user-block">
+                                            <span class="notification-list-user-name">{{activity.userOffice}}</span>
+                                            Recibió requisición {{activity.consecutive}}
+                                            de la receta {{activity.serie}}
+                                            del paciente {{activity.patientName}}
+                                            <div class="notification-date">Fecha: {{activity.date}} Hora: {{activity.time}}</div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="list-footer"> <a href="#">Ver todas las notificaciones</a></div>
+                        </li>
+                    </ul>
+                </div>
+                -->
+            </div>
+        </nav>
+    </div>
+</div>
+<!-- --------------------------------- -->
+<!-- ------------- SIDEBAR ----------- -->
+<!-- --------------------------------- -->
+<div class="left-sidebar sidebar-dark">
+    <div class="menu-list">
+        <nav class="navbar navbar-expand-lg navbar-light">
+            <button id="navbar-button" class="navbar-toggler" type="button" (click)="showNavbar()">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav flex-column">
+                    <!-- USER PROFILE -->
+                    <li class="nav-divider">
+                        <i class="fa fa-user"></i>
+                        Cuenta
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link">{{employeeName}}</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link">Perfil: {{userRole}}</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link">Servicio: {{officeName}}</a>
+                    </li>
+                    <li class="nav-item ">
+                        <div class="row"></div>
+                        <a class="nav-link" (click)="logOut()">Cerrar sessión
+                            <i class="fa fa-sign-out fa-2x ml-4"></i>
+                        </a>
+                    </li>
+                    <!-- REQUISITION -->
+                    <li class="nav-divider" *ngIf="showFarmacia()">
+                        <i class="fa fa-file-text"></i>
+                        Requisiciones
+                    </li>
+                    <li class="nav-item" *ngIf="showFarmacia()">
+                        <a class="nav-link"
+                            [routerLink]="'/requisition/create'"
+                            routerLinkActive="active"
+                            (click)="hideSidebar()">
+                            Crear
+                        </a>
+                    </li>
+                    <li class="nav-item" *ngIf="showFarmacia()">
+                        <a class="nav-link"
+                            [routerLink]="'/requisition/read'"
+                            routerLinkActive="active"
+                            (click)="hideSidebar()">
+                            Listado
+                        </a>
+                    </li>
+                    <!-- AUTHORIZATION -->
+                    <li class="nav-divider" *ngIf="showAdministrativa()">
+                        <i class="fa fa-pencil"></i>
+                        Autorizaciones
+                    </li>
+                    <li class="nav-item" *ngIf="showAdministrativa()">
+                        <a class="nav-link"
+                            [routerLink]="'/requisition/receive'"
+                            routerLinkActive="active"
+                            (click)="hideSidebar()">
+                            Recibir
+                        </a>
+                    </li>
+                    <li class="nav-item" *ngIf="showAdministrativa()">
+                        <a class="nav-link"
+                            [routerLink]="'/requisition/send'"
+                            routerLinkActive="active"
+                            (click)="hideSidebar()">
+                            Enviar
+                        </a>
+                    </li>
+                    <!-- QUOTATION -->
+                    <li class="nav-divider" *ngIf="showMateriales()">
+                        <i class="fa fa-dollar"></i>
+                        Cotizaciones
+                    </li>
+                    <li class="nav-item" *ngIf="showMateriales()">
+                        <a class="nav-link notification"
+                            [routerLink]="'/quotation/to-process'"
+                            routerLinkActive="active"
+                            (click)="hideSidebar()">
+                            <div class="row link">
+                                <div class="col text">A procesar</div>
+                                <div class="col item">{{requisitionsCreated}}</div>
+                            </div>
+                        </a>
+                    </li>
+                    <!--
+                    <li class="nav-item">
+                        <a class="nav-link"
+                            [routerLink]="'/quotation/create'"
+                            routerLinkActive="active">
+                            Cotizar
+                        </a>
+                    </li>
+                    -->
+                    <li class="nav-item" *ngIf="showMateriales()">
+                        <a class="nav-link"
+                            [routerLink]="'/quotation/read'"
+                            routerLinkActive="active"
+                            (click)="hideSidebar()">
+                            Listado
+                        </a>
+                    </li>
+                    <!-- TRACING -->
+                    <li class="nav-divider">
+                        <i class="fa fa-wpexplorer"></i>
+                        Seguimiento
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link"
+                            [routerLink]="'/requisition/tracking'"
+                            routerLinkActive="active"
+                            (click)="hideSidebar()">
+                            Rastrear
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link"
+                            [routerLink]="'/quotation/resume'"
+                            routerLinkActive="active"
+                            (click)="hideSidebar()">
+                            Resumen
+                        </a>
+                    </li>
+                    <!-- CATALOG -->
+                    <li class="nav-divider" *ngIf="showControl()">
+                        <i class="fa fa-book"></i>
+                        Catálogos
+                    </li>
+                    <li class="nav-item" *ngIf="showControl()">
+                        <a class="nav-link">Medicamentos</a>
+                    </li>
+                    <li class="nav-item" *ngIf="showControl()">
+                        <a class="nav-link">Facturas</a>
+                    </li>
+                    <li class="nav-item" *ngIf="showControl()">
+                        <a class="nav-link">Proveedores</a>
+                    </li>
+                    <!-- CONTROL -->
+                    <li class="nav-divider" *ngIf="showControl()">
+                        <i class="fa fa-database"></i>
+                        Database
+                    </li>
+                    <li class="nav-item" *ngIf="showControl()">
+                        <a class="nav-link">Empleados</a>
+                    </li>
+                    <li class="nav-item" *ngIf="showControl()">
+                        <a class="nav-link">Pacientes</a>
+                    </li>
+                    <li class="nav-item" *ngIf="showControl()">
+                        <a class="nav-link"
+                            [routerLink]="'/user/read'"
+                            routerLinkActive="active">
+                            Usuarios
+                        </a>
+                    </li>
+                    <li class="nav-item" *ngIf="showControl()">
+                        <a class="nav-link">Servicios</a>
+                    </li>
+                    <li class="nav-item" *ngIf="showControl()">
+                        <a class="nav-link">Movimientos</a>
+                    </li>
+                    <li class="nav-item" *ngIf="showControl()">
+                        <a class="nav-link"
+                        [routerLink]="'/notification'"
+                        routerLinkActive="active"
+                        (click)="hideSidebar()">
+                        Notificaciones
+                    </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+</div>
+<!-- --------------------------------- -->
+<!-- ------------- WRAPER ------------ -->
+<!-- --------------------------------- -->
+<div class="dashboard-wrapper">
+    <div class="container-fluid dashboard-content">
+        
+        <!-- ------------- BREADCRUMB ------------ -->
+        <div class="breadcrumb-app">
+            <nav aria-label="breadcrumb-items">
+                <ol class="breadcrumb-items">
+                    <li class="breadcrumb-item"><a [routerLink]="'home'" class="breadcrumb-link">Inicio</a></li>
+                    <li class="breadcrumb-item active" *ngIf="level1">{{level1}}</li>
+                    <li class="breadcrumb-item active" *ngIf="level2">{{level2}}</li>
+                </ol>
+            </nav>
+        </div>  
+
+        <!-- ------------- COMPONENTS ------------ -->
+        <router-outlet></router-outlet>
+    </div>
+</div>
+
+<!-- ------------- FOOTER ------------ -->
+<footer class="footer">
+    Copyright &copy; {{year}} Todos los derechos reservados.
+</footer>

@@ -1,0 +1,51 @@
+<div class="card">
+    <div class="d-flex justify-content-end">
+        <div class="col" style="color: red; text-align: right;">
+            * Campo requerido
+        </div>
+    </div>
+    <form #requisitionForm="ngForm">
+        <div class="form-row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="consecutive" class="control-label">Consecutivo</label>
+                    <input id="consecutive" class="form-control" type="text" required name="consecutive"
+                        [(ngModel)]="requisition.consecutive" #consecutive="ngModel"
+                        [ngModel]="requisition.consecutive" 
+                        (ngModelChange)="requisition.consecutive = $event.toUpperCase()">
+                    <div *ngIf="consecutive.invalid && !submitted" class="alert alert-danger">
+                        <div *ngIf="consecutive.errors!['required']">
+                            Dato requerido.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <label for="serie" class="control-label">Receta serie</label>
+                <input id="serie" class="form-control" type="text" required name="serie"
+                    [(ngModel)]="prescription.serie" #serie="ngModel"
+                    [ngModel]="prescription.serie" 
+                    (ngModelChange)="prescription.serie = $event.toUpperCase()">
+                <div *ngIf="serie.invalid && !submitted" class="alert alert-danger">
+                    <div *ngIf="serie.errors!['required']">
+                        Dato requerido.
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="col-md-12">
+                <label for="notes">Observaciones</label>
+                <input id="notes" class="form-control" type="text" name="notes"
+                    [(ngModel)]="requisition.notes" #notes="ngModel"
+                    [ngModel]="requisition.notes" 
+                    (ngModelChange)="requisition.notes = $event.toUpperCase()">
+            </div>
+        </div>
+    </form>
+    <div class="p-grid p-nogutter p-justify-end">
+        <p-button label="Siguiente" (onClick)="nextPage()"
+            class="btn-next" icon="pi pi-angle-right" iconPos="right">
+        </p-button>
+    </div>
+</div>

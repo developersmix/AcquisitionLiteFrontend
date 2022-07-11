@@ -1,0 +1,72 @@
+<!-- FIRST PART. TITLE, BACK AND ADD BUTTONS -->
+<div class="alert alert-warning" style="text-align: center;">
+    <div class="row">
+        <div class="col">
+            <div class="d-flex justify-content-left">
+                <a id="back" name="button_back"
+                    class="btn btn-outline-secondary fa fa-arrow-left fa-2x" type="button"
+                    style="margin-top: 3px;"
+                    routerLink="/">
+                </a>
+            </div>
+        </div>
+        <div class="col">
+            <div class="d-flex justify-content-center">
+                <h4 style="margin-top: 10px;">Control de usuarios</h4>
+            </div>
+        </div>
+        <div class="col">
+            <div class="d-flex justify-content-end">
+                <button id="add" name="button_add"
+                    class="btn btn-success btn-lg" type="button"
+                    style="margin-top: 3px;"
+                    (click)="loadSaveForm()"
+                    *ngIf="showAdd()">
+                    AGREGAR USUARIO
+            </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SECOND PART. TABLE USERS -->
+<div class="table-responsive">
+    <table id="list-table"
+        class="table table-striped table-bordered"
+        style="width:100%;">
+        <thead class="table-light" style="position: sticky; top: 0">
+            <tr>
+                <th *ngIf="showIfAdmin()">ID</th>
+                <th>USUARIO</th>
+                <th>EMAIL</th>
+                <th>TELEFONO</th>
+                <th>MODULE : ROLE</th>
+                <th class="no_printable" *ngIf="showIfAdmin()">HISTORIAL</th>
+                <th class="no_printable" *ngIf="showEdit()">ACCIONES</th>
+            </tr>
+        </thead>
+        <tbody class="context-menu-one">
+            <tr *ngFor="let user of users">
+                <td *ngIf="showIfAdmin()">{{user.id}}</td>
+                <td>{{user.username}}</td>
+                <td>{{user.email}}</td>
+                <td>{{user.authorities}}</td>
+                <td class="no_printable" *ngIf="showIfAdmin()">{{user.changeHistory}}</td>
+                <td class="no_printable" *ngIf="showEdit()">
+                    <a id="update" name="button_update"
+                        class="btn btn-outline-warning fa fa-pencil" rol="button"
+                        (click)="loadEditForm(user)">
+                    </a>
+                    <a id="delete" name="button_delete"
+                        class="btn btn-outline-danger fa fa-trash" rol="button"
+                        style="margin-left: 10px;"
+                        (click)="delete(user)"
+                        *ngIf="showIfAdmin()">
+                    </a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<router-outlet></router-outlet>

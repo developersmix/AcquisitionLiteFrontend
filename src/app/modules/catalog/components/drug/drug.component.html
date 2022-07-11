@@ -1,0 +1,91 @@
+<div class="stepsdemo-content">
+    <p-card>
+        <ng-template pTemplate="title">
+            Medicamento
+        </ng-template>
+        <ng-template pTemplate="subtitle">
+            Agregue la información requerida
+        </ng-template>
+        <ng-template pTemplate="content">
+            <form #drugForm="ngForm">
+                <div class="p-field">
+                    <label for="code_dialog" class="dialog-label">Código</label>
+                    <input id="code_dialog" class="dialog-field" type="text" appUppercase required autofocus name="code_dialog"
+                        [(ngModel)]="drug.code" #code="ngModel">
+                    <div *ngIf="code.invalid && drugForm.submitted" class="alert alert-danger">
+                        <div *ngIf="code.errors!['required']">
+                            Campo requerido.
+                        </div>
+                    </div>
+                </div>
+                <div class="p-field">
+                    <label for="drug_name_dialog" class="dialog-label">Nombre</label>
+                    <input id="drug_name_dialog" class="dialog-field" type="text" appUppercase required pattern="[ a-zA-Z]+"
+                        name="drug_name_dialog" [(ngModel)]="drug.name" #name="ngModel">
+                    <div *ngIf="name.invalid && drugForm.submitted" class="alert alert-danger">
+                        <div *ngIf="name.errors!['required']">
+                            Campo requerido.
+                        </div>
+                        <div *ngIf="name.errors!['pattern']">
+                            Solo letras son permitidas.
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="p-field">
+                            <label for="medida" class="dialog-label">Medida</label>
+                            <input id="medida" class="dialog-field" type="number" required pattern="[0-9]+" name="medida"
+                                [(ngModel)]="drug.measure" #measure="ngModel">
+                            <div *ngIf="measure.invalid && drugForm.submitted" class="alert alert-danger">
+                                <div *ngIf="measure.errors!['required']">
+                                    Campo requerido.
+                                </div>
+                                <div *ngIf="measure.errors!['pattern']">
+                                    Solo números son permitidos.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="p-field">
+                            <label for="unit_dialog" class="dialog-label">Unidades</label>
+                            <input id="unit_dialog" class="dialog-field" type="text" style="text-transform: lowercase;" required
+                                name="unit_dialog" [(ngModel)]="drug.unit" #code="ngModel">
+                        </div>
+                    </div>
+                </div>
+                <div class="p-field">
+                    <label for="brand_dialog" class="dialog-label">Marca</label>
+                    <input id="brand_dialog" class="dialog-field" type="text" appUppercase name="brand_dialog"
+                        [(ngModel)]="drug.brand" #brand="ngModel">
+                </div>
+                <div class="p-field">
+                    <label for="description_dialog" class="dialog-label">Descripción</label>
+                    <input id="description_dialog" class="dialog-field" type="text" appUppercase name="description_dialog"
+                        [(ngModel)]="drug.description" #description="ngModel">
+                </div>
+                <div class="p-field">
+                    <label for="classification_dialog" class="dialog-label">Clasificación</label>
+                    <input id="classification_dialog" class="dialog-field" type="text" appUppercase name="classification_dialog"
+                        [(ngModel)]="drug.classification" #classification="ngModel">
+                </div>
+                <div class="p-field">
+                    <label for="drug_notes_dialog" class="dialog-label">Observaciones</label>
+                    <input id="drug_notes_dialog" class="dialog-field" type="text" appUppercase name="drug_notes_dialog"
+                        [(ngModel)]="drug.notes" #notes="ngModel">
+                </div>
+                <div class="d-flex justify-content-center">
+                    <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text"
+                        (click)="prepareData(drugForm)"></button>
+                </div>
+            </form>
+        </ng-template>
+        <ng-template pTemplate="footer">
+            <div class="p-grid p-nogutter p-justify-between">
+                <p-button label="Back" (onClick)="prevPage()" icon="pi pi-angle-left"></p-button>
+                <p-button label="Next" (onClick)="nextPage()" icon="pi pi-angle-right" iconPos="right"></p-button>
+            </div>
+        </ng-template>
+    </p-card>
+</div>

@@ -1,0 +1,107 @@
+<div class="card">
+    <!-- CONTROL -->
+    <div class="row">
+        <div class="col-sm-8 d-flex justify-content-start">
+            <div class="input-group">
+                <div class="input-group criteria">
+                    <input id="criteria" class="form-control" type="text"
+                        style="font-weight: bold;" required autofocus
+                        name="criteria" [(ngModel)]="criteria" #validator="ngModel">
+                    <div class="input-group-append">
+                        <button id="searchByCode" class="btn btn-outline-primary fa fa-search"
+                            (click)="findByCriteriaInColumns()">&emsp;Buscar
+                        </button>
+                    </div>
+                    <div *ngIf="validator.invalid && submittedSearch" class="alert alert-danger">
+                        <div *ngIf="validator.errors!['required']">
+                            Dato requerido.
+                        </div>
+                    </div>
+                </div> 
+            </div>
+        </div>
+        <div class="col-sm-4 d-flex justify-content-end">
+            <button class="btn btn-success fa fa-paper-plane-o"
+                (click)="send()">&emsp; Enviar
+            </button>
+        </div>
+    </div>
+    <!-- SELECTED ITEMS -->
+    <p-table #dtToRecieve [value]="requisitionSerializedList"
+        [filterDelay]="0" [rowHover]="true" dataKey="requisitionId"
+        currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} registros"
+        styleClass="p-datatable-striped p-datatable-responsive-demo p-datatable-sm"
+        [style]="{width:'100%'}">
+        <ng-template pTemplate="header">
+            <tr>
+                <th style="width: 80px;">Cons.</th>
+                <th style="width: 100px;">Receta</th>
+                <th style="width: 200px;">Paciente</th>
+                <th style="width: 140px;">RFC</th>
+                <th style="width: 300px;">Medicamento</th>
+                <th style="width: 140px;">Fecha</th>
+                <th style="width: 100px;">Rastreo</th>
+                <th style="width: 160px;">Status</th>
+                <th style="width: 160px;">Remover</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-requisitionSerialized>
+            <tr [pSelectableRow]="requisitionSerialized">
+                <td style="width: 80px;">{{requisitionSerialized.consecutive}}</td>
+                <td style="width: 100px;">{{requisitionSerialized.serie}}</td>
+                <td style="width: 200px;">{{requisitionSerialized.patientName}}</td>
+                <td style="width: 140px;">{{requisitionSerialized.rfc}}</td>
+                <td style="width: 300px;">{{requisitionSerialized.description}}</td>
+                <td style="width: 140px;">{{requisitionSerialized.date}}</td>
+                <td style="width: 100px;">{{requisitionSerialized.trackingNumber}}</td>
+                <td style="width: 160px;">{{requisitionSerialized.status}}</td>
+                <td style="width: 100px;">
+                    <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger"
+                        (click)="removeRequisition(requisitionSerialized)">
+                    </button>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="summary">
+            <div class="p-d-flex p-ai-center p-jc-between">
+                En total hay {{requisitionSerializedList ? requisitionSerializedList.length : 0 }} requisiciones.
+            </div>
+        </ng-template>
+    </p-table>
+</div>
+<!-- DIALOG SELECT REQUISITION -->
+<p-dialog [(visible)]="showTableRequisitionDialog" [style]="{width: '1200px'}" header="MEDICAMENTOS" [modal]="true"
+    styleClass="p-fluid">
+    <p-table #dt [value]="requisitions" [rows]="5" [paginator]="true" [rowsPerPageOptions]="[5,10,25,50]"
+        [filterDelay]="0" [rowHover]="true" dataKey="id"
+        [globalFilterFields]="['id', 'code', 'description']" selectionMode="single" [(selection)]="selectedRequisition"
+        currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} registros"
+        [showCurrentPageReport]="true" (onRowSelect)="onRowSelect($event)" (onRowUnselect)="onRowUnselect($event)"
+        styleClass="p-datatable-striped p-datatable-responsive-demo p-datatable-sm">
+        <ng-template pTemplate="header">
+            <tr>
+                <th style="width: 80px;">Cons.</th>
+                <th style="width: 100px;">Receta</th>
+                <th style="width: 200px;">Paciente</th>
+                <th style="width: 140px;">RFC</th>
+                <th style="width: 300px;">Medicamento</th>
+                <th style="width: 140px;">Fecha</th>
+                <th style="width: 100px;">Rastreo</th>
+                <th style="width: 160px;">Status</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-requisition>
+            <tr [pSelectableRow]="requisition">
+                <td style="width: 80px;">{{requisition.consecutive}}</td>
+                <td style="width: 100px;">{{requisition.serie}}</td>
+                <td style="width: 200px;">{{requisition.patientName}}</td>
+                <td style="width: 140px;">{{requisition.rfc}}</td>
+                <td style="width: 300px;">{{requisition.description}}</td>
+                <td style="width: 140px;">{{requisition.date}}</td>
+                <td style="width: 100px;">{{requisition.trackingNumber}}</td>
+                <td style="width: 160px;">{{requisition.status}}</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</p-dialog>
+

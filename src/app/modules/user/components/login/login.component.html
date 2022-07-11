@@ -1,0 +1,27 @@
+<div class="container">
+    <div class="row">
+        <div class="form-login">
+            <h4>BIENVENIDO</h4>
+            <form [formGroup]!="loginFormGroup" novalidate class="form"
+                role="form" autocomplete="off" id="formLogin">
+                <div class="form-group">
+                    <input formControlName="username" type="text" id="username"
+                        class="form-control" placeholder="Usuario" required autofocus/>
+                    <input formControlName="password" type="password" id="password"
+                        class="form-control" placeholder="Contraseña" required/>
+                    <div class="wrapper button">
+                        <button (click)="validateLogin()"
+                            [disabled]="loginFormGroup!.invalid"
+                            class="btn btn-primary btn-md">
+                            Entrar<i class="fa fa-sign-in"></i>
+                        </button>
+                    </div>
+                    <br>
+                    <div *ngIf="isLoginFailed" class="alert alert-danger">
+                        {{errorMessage}}
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

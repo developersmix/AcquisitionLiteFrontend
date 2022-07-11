@@ -1,0 +1,30 @@
+<div class="card">
+    <form class="form-inline">
+        <div class="form-group">
+            <label for="connect">Connection:</label>
+            <button id="disconnect" class="btn btn-warning" type="submit"
+                (click)="closeConnection()">Disconnect</button>
+        </div>
+    </form>
+
+    <form class="form-inline" style="margin-top: 20px;">
+        <div class="input-group">
+            <input id="message" class="form-control" type="text" style="font-weight: bold;" autofocus
+                pattern="[A-Za-z0-9.-_ ]{1,}" name="message" [(ngModel)]="message">
+        </div>
+        <button id="send" class="btn btn-success" type="button" (click)="sendMessageWithSocket()">Send</button>
+    </form>
+
+    <table id="conversation" class="table table-striped" style="margin-top: 20px;">
+        <thead>
+            <tr>
+                <th>Activity</th>
+            </tr>
+        </thead>
+        <tbody *ngFor="let notification of notifications">
+            <tr>
+                <td>{{notification.text}}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>

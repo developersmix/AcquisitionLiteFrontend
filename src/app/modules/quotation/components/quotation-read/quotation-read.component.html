@@ -1,0 +1,159 @@
+<div class="card">
+    <p-toolbar styleClass="p-mb-6">
+        <ng-template pTemplate="left"></ng-template>
+        <ng-template pTemplate="right">
+            <button pButton pRipple label="Exportar" icon="pi pi-file-excel"
+                (click)="exportExcel()" class="p-button-success"
+                pTooltip="XLS" tooltipPosition="bottom">
+            </button>
+        </ng-template>
+    </p-toolbar>
+    <p-table #dt [value]="quotationSerializedList" [rows]="5" [paginator]="true" [rowsPerPageOptions]="[5,10,25,50]"
+        [filterDelay]="0" [rowHover]="true" dataKey="quotationId" 
+        [globalFilterFields]="['consecutive', 'patient', 'date']"
+        selectionMode="single" [(selection)]="selectedQuotationSerialized"
+        currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} registros"
+        [showCurrentPageReport]="true"  (onRowSelect)="onRowSelect($event)" (onRowUnselect)="onRowUnselect($event)"
+        styleClass="p-datatable-striped p-datatable-responsive-demo p-datatable-sm"
+        [style]="{width:'100%'}">
+        <ng-template pTemplate="header">
+            <tr>
+                <th pSortableColumn="consecutive" style="width: 80px;">
+                    Cons.<p-sortIcon field="consecutive"></p-sortIcon>
+                </th>
+                <th pSortableColumn="serie" style="width: 100px;">
+                    Receta<p-sortIcon field="serie"></p-sortIcon>
+                </th>
+                <th pSortableColumn="patient" style="width: 200px;">
+                    Paciente<p-sortIcon field="patient"></p-sortIcon>
+                </th>
+                <th pSortableColumn="rfc" style="width: 140px;">
+                    RFC<p-sortIcon field="rfc"></p-sortIcon>
+                </th>
+                <th pSortableColumn="description" style="width: 300px;">
+                    Medicamento<p-sortIcon field="description"></p-sortIcon>
+                </th>
+                <th pSortableColumn="quantity" style="width: 100px;">
+                    Cantidad<p-sortIcon field="quantity"></p-sortIcon>
+                </th>
+                <th pSortableColumn="date" style="width: 140px;">
+                    Fecha<p-sortIcon field="date"></p-sortIcon>
+                </th>
+                <th pSortableColumn="tracking" style="width: 100px;">
+                    Rastreo<p-sortIcon field="tracking"></p-sortIcon>
+                </th>
+                <th pSortableColumn="status" style="width: 160px;">
+                    Status<p-sortIcon field="status"></p-sortIcon>
+                </th>
+            </tr>
+            <tr>
+                <th style="width: 80px;">
+                    <input pInputText type="text" (input)="dt.filter($any($event.target).value, 'consecutive', 'contains')"
+                    placeholder="" class="p-column-filter">
+                </th>
+                <th style="width: 100px;">
+                    <input pInputText type="text" (input)="dt.filter($any($event.target).value, 'serie', 'contains')"
+                        placeholder="" class="p-column-filter">
+                </th>
+                <th style="width: 200px;">
+                    <input pInputText type="text" (input)="dt.filter($any($event.target).value, 'patient', 'contains')"
+                    placeholder="" class="p-column-filter">
+                </th>
+                <th style="width: 140px;">
+                    <input pInputText type="text" (input)="dt.filter($any($event.target).value, 'rfc', 'contains')"
+                    placeholder="" class="p-column-filter">
+                </th>
+                <th style="width: 300px;">
+                    <input pInputText type="text" (input)="dt.filter($any($event.target).value, 'description', 'contains')"
+                        placeholder="" class="p-column-filter" style="width: 100%">
+                </th>
+                <th style="width: 100px;">&nbsp;</th>
+                <th style="width: 140px;">
+                    <input pInputText type="text" (input)="dt.filter($any($event.target).value, 'date', 'startsWith')"
+                        placeholder="" class="p-column-filter" style="width: 100%">
+                </th>
+                <th style="width: 100px;">
+                    <input pInputText type="text" (input)="dt.filter($any($event.target).value, 'tracking', 'startsWith')"
+                        placeholder="" class="p-column-filter" style="width: 100px;">
+                </th>
+                <th style="width: 160px;">
+                    <input pInputText type="text" (input)="dt.filter($any($event.target).value, 'status', 'startsWith')"
+                        placeholder="" class="p-column-filter" style="width: 100px;">
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-quotationSerialized>
+            <tr [pSelectableRow]="quotationSerialized">
+                <td style="width: 80px;">{{quotationSerialized.consecutive}}</td>
+                <td style="width: 100px;">{{quotationSerialized.serie}}</td>
+                <td style="width: 200px;">{{quotationSerialized.patientName}}</td>
+                <td style="width: 140px;">{{quotationSerialized.rfc}}</td>
+                <td style="width: 300px;">{{quotationSerialized.description}}</td>
+                <td style="width: 100px;">{{quotationSerialized.quantity}}</td>
+                <td style="width: 140px;">{{quotationSerialized.date}}</td>
+                <td style="width: 100px;">{{quotationSerialized.trackingNumber}}</td>
+                <td style="width: 160px;">{{quotationSerialized.status}}
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="summary">
+            <div class="p-d-flex p-ai-center p-jc-between">
+                En total hay {{quotationSerializedList ? quotationSerializedList.length : 0 }} cotizaciones.
+            </div>
+        </ng-template>
+    </p-table>
+</div>
+<!-- DIALOG SELECT DRUG -->
+<p-dialog [(visible)]="showSelectedItemDialog" [style]="{width: '1000px'}" header="Detalles de la cotización" [modal]="true"
+    styleClass="p-fluid">
+    <div class="card">
+        <div class="title">Detalles de la requisición</div>
+        <div class="info">
+            <div class="row">
+                <div class="col-4"> <span id="heading">Rastreo</span><br> <span id="details">{{quotationSerialized.trackingNumber}}</span></div>
+                <div class="col-4"> <span id="heading">Consecutivo</span><br> <span id="details">{{quotationSerialized.consecutive}}</span></div>
+                <div class="col-4 pull-right"><span id="heading">Receta serie</span><br><span id="details">{{quotationSerialized.serie}}</span></div>
+            </div>
+            <div class="row">
+                <div class="col-6"> <span id="heading">Paciente</span><br> <span id="details">{{quotationSerialized.patientName}}</span></div>
+                <div class="col-3 pull-right"><span id="heading">RFC</span><br><span id="details">{{quotationSerialized.patientRfc}}</span></div>
+                <div class="col-3 pull-right"><span id="heading">Teléfono</span><br><span id="details">{{quotationSerialized.patientPhone}}</span></div>
+            </div>
+        </div>
+        <table id="requisition_table" class="table table-bordered">
+            <thead class="table-light">
+                <tr>
+                    <th>ARTÍCULO</th>
+                    <th>CANTIDAD</th>
+                </tr>
+            </thead>
+            <tbody class="context-menu-one">
+                <tr>
+                    <td>{{quotationSerialized.description}}</td>
+                    <td>{{quotationSerialized.quantity}}</td>
+                </tr>
+            </tbody>
+        </table>
+        <table id="quotation_table" class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Cotización</th>
+                    <th>Proveedor</th>
+                    <th>RFC</th>
+                    <th>Teléfono</th>
+                    <th>Correo</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{quotationSerialized.price}}</td>
+                    <td>{{quotationSerialized.supplierName}}</td>
+                    <td>{{quotationSerialized.supplierRfc}}</td>
+                    <td>{{quotationSerialized.supplierPhone}}</td>
+                    <td>{{quotationSerialized.supplierEmail}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>    
+</p-dialog>
+
+

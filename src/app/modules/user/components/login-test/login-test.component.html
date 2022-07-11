@@ -1,0 +1,29 @@
+<div class="container">
+    <div class="row">
+        <div class="form-login">
+            <h4>BIENVENIDO</h4>
+            <h6>For testing purposes only</h6>
+            <form class="form" role="form" autocomplete="off" id="formLogin">
+                <div class="form-group">
+                    <select class="form-control" name="" id="select_user" (change)="updateUserValue()">
+                        <option value="control">Control</option>
+                        <option value="administrador">Administrador</option>
+                        <option value="farmacia">Farmacia</option>
+                        <option value="materiales">Materiales</option>
+                        <option value="jjgc">jjgc</option>
+                        <option value="tester">Tester</option>
+                    </select>
+                    <div class="wrapper button">
+                        <button (click)="validateLogin()" class="btn btn-primary btn-md">
+                            Entrar<i class="fa fa-sign-in"></i>
+                        </button>
+                    </div>
+                    <br>
+                    <div *ngIf="isLoginFailed" class="alert alert-danger">
+                        {{errorMessage}}
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

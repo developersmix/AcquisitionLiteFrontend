@@ -1,0 +1,376 @@
+<div class="card">
+    <p-steps [model]="stepItems" [readonly]="true"></p-steps>
+</div>
+
+<router-outlet></router-outlet>
+
+
+
+
+<!--
+
+<div class="d-flex justify-content-end">
+    <div class="col" style="color: red; text-align: right;">
+        * Campo requerido
+    </div>
+</div>
+
+<form class="form top" #requisitionForm="ngForm">
+    <div class="form-row">
+        <div class="col-md-2">
+            <div class="form-group">
+            <label for="consecutive" class="control-label">Consecutivo</label>
+            <input id="consecutive" class="form-control" type="text" appUppercase required
+                name="consecutive" [(ngModel)]="requisition.consecutive" #consecutive="ngModel">
+            <div *ngIf="consecutive.invalid && requisitionForm.submitted"
+                class="alert alert-danger">
+                <div *ngIf="consecutive.errors!['required']">
+                    Requerido
+                </div>
+            </div>
+        </div>
+        </div>
+        <div class="col-md-3">
+            <label for="serie" class="control-label">Receta serie</label>
+            <input id="serie" class="form-control" type="text" appUppercase required
+                name="serie" [(ngModel)]="prescription.serie" #serie="ngModel">
+            <div *ngIf="serie.invalid && requisitionForm.submitted"
+                class="alert alert-danger">
+                <div *ngIf="serie.errors!['required']">
+                    Requerido
+                </div>
+            </div>
+        </div>
+        <div class="col-md-7">
+            <label for="notes">Observaciones</label>
+            <input id="notes" class="form-control" type="text" appUppercase
+                name="notes" [(ngModel)]="requisition.notes" #notes="ngModel">
+        </div>
+    </div>
+</form>
+
+<form class="form middle" #drugForm="ngForm">
+    <div class="form-row">
+        <div class="col-sm-2 label"><h6>MEDICAMENTO</h6></div>
+        <div class="col-sm-8">
+            <button class="btn btn-outline-secondary fa fa-search"
+                type="button" (click)="openTemp()">Buscar</button>
+        </div>
+        <div class="col-sm-2 button">
+            <button class="btn btn-primary"
+                type="button" (click)="openNewDrug()">Nuevo</button>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="col-md-3">
+            <label for="code">Clave</label>
+            <input id="code" class="form-control" type="text"
+                appUppercase disabled value="{{drug.code}}">
+        </div>
+        <div class="col-md-7">
+            <label for="drug_name">Nombre</label>
+            <input id="drug_name" class="form-control" type="text"
+                appUppercase disabled value="{{drug.name}}">
+        </div>
+        <div class="col-md-2">
+            <label for="quantity" class="control-label">Cantidad</label>
+            <input id="quantity" class="form-control" type="numer" required
+                pattern="[0-9]+"
+                name="quantity" [(ngModel)]="prescription.quantity" #quantity="ngModel">
+            <div *ngIf="quantity.invalid && drugForm.submitted"
+                class="alert alert-danger">
+                <div *ngIf="quantity.errors!['required']">
+                    Requerido
+                </div>
+                <div *ngIf="quantity.errors!['pattern']">
+                    Solo números
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="col">
+            <label for="classification">Clasificación</label>
+            <input id="classification" class="form-control" type="text"
+                disabled appUppercase value="{{drug.classification}}">
+        </div>
+    </div> 
+</form>
+
+<form class="form middle" #patientForm="ngForm">
+    <div class="form-row">
+        <div class="col-sm-2 label"><h6>PACIENTE</h6></div>
+        <div class="col-sm-8"></div>
+        <div class="col-sm-2 button">
+            <button class="btn btn-primary" (click)="openNewPatient()">Nuevo</button>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="col-md-3">
+            <label for="rfc">RFC</label>
+            <div class="input-group">
+                <input id="rfc" class="form-control" type="text" appUppercase required
+                    pattern="[a-zA-Z]{4}[0-9]{6}" placeholder="AAAA000000"
+                    name="rfc" [(ngModel)]="patient.rfc" #rfc="ngModel">
+                <div class="input-group-append">
+                    <button id="search-rfc" class="btn btn-outline-secondary fa fa-search"
+                        type="button" (click)="findPatientByRfc(patientForm)">
+                    </button>
+                </div>
+            </div>
+            <div *ngIf="rfc.invalid && patientForm.submitted"
+                class="alert alert-danger">
+                <div *ngIf="rfc.errors!['required']">
+                    Requerido
+                </div>
+                <div *ngIf="rfc.errors!['required']">
+                    Siga el formato AAAA000000 (4 letras, 6 números)
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <label for="patient_name">NOMBRE</label>
+            <div class="input-group">
+                <input id="patient_name" class="form-control" type="text" appUppercase required
+                    pattern="[ a-zA-Z]+"
+                    name="patient_name" [(ngModel)]="patient.name" #name="ngModel">
+                <div class="input-group-append">
+                    <button id="search" name="button_search"
+                        class="btn btn-outline-secondary fa fa-search"
+                        type="button"
+                        (click)="findPatientByName(patientForm)">
+                    </button>
+                </div>
+            </div>
+            <div *ngIf="name.invalid && patientForm.submitted"
+                class="alert alert-danger">
+                <div *ngIf="name.errors!['required']">
+                    Requerido
+                </div>
+                <div *ngIf="name.errors!['pattern']">
+                    Solo letras son permitidas
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="phone">Teléfono</label>
+                <input id="phone" class="form-control" type="text" disabled
+                    name="phone" [(ngModel)]="patient.phone" #phone="ngModel">
+            </div>
+        </div>
+    </div>
+</form>
+
+<form class="form middle" #employeeForm="ngForm">
+    <div class="form-row">
+        <div class="col-sm-2  label"><h6>MÉDICO</h6></div>
+        <div class="col-sm-8"></div>
+        <div class="col-sm-2 button">
+            <button class="btn btn-primary" (click)="openNewEmployee()">Nuevo</button>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="col-md-6">
+            <label for="employee_name">Nombre</label>
+            <div class="input-group">
+                <input id="employee_name" class="form-control" type="text" appUppercase required
+                    pattern="[ a-zA-Z]+"
+                    name="employee_name" [(ngModel)]="employee.name" #name="ngModel">
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary fa fa-search"
+                        type="button" (click)="findDrugByName(employeeForm)">
+                    </button>
+                </div>
+            </div>
+            <div *ngIf="name.invalid && employeeForm.submitted"
+                class="alert alert-danger">
+                <div *ngIf="name.errors!['required']">
+                    Campo requerido.
+                </div>
+                <div *ngIf="name.errors!['pattern']">
+                    Solo letras son permitidas.
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <label for="office_name">Servicio</label>
+            <input id="office_name" class="form-control" type="text" disabled appUppercase
+                name="office_name" [(ngModel)]="office.name" #name="ngModel">
+        </div>
+    </div>
+</form>
+<div class="d-flex justify-content-center">
+    <button class="btn btn-success" id="btn-submit" type="button"
+        (click)="prepareRequisition(requisitionForm, drugForm, patientForm, employeeForm)">
+        GUARDAR
+    </button>
+</div>
+
+<p-dialog [(visible)]="patientDialog" [style]="{width: '850px'}"
+    header="DATOS DEL PACIENTE" [modal]="true" styleClass="p-fluid">
+    <ng-template pTemplate="content">
+        <div class="p-field">
+            <label for="patient_name_dialog"class="dialog-label">Nombre</label>
+            <input id="patient_name_dialog" class="dialog-field" type="text"
+                appUppercase required pattern="[ a-zA-Z]+" autofocus
+                name="patient_name_dialog" [(ngModel)]="patient.name" #name="ngModel">
+            <div *ngIf="name.invalid && (name.dirty || name.touched)"
+                class="alert alert-danger">
+                <div *ngIf="name.errors!['required']">
+                    Campo requerido.
+                </div>
+                <div *ngIf="name.errors!['pattern']">
+                    Solo letras son permitidas.
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="p-field">
+                    <label for="rfc_dialog"class="dialog-label">RFC</label>
+                    <input id="rfc_dialog" class="dialog-field" type="text"
+                        appUppercase required pattern="[a-zA-Z]{4}[0-9]{6}" placeholder="AAAA000000"
+                        name="rfc_dialog" [(ngModel)]="patient.rfc" #rfc="ngModel">
+                    <div *ngIf="rfc.invalid && (rfc.dirty || rfc.touched)"
+                        class="alert alert-danger">
+                        <div *ngIf="rfc.errors!['required']">
+                            Campo requerido.
+                        </div>
+                        <div *ngIf="rfc.errors!['pattern']">
+                            Siga el formato AAAA000000.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="p-field">
+                    <label for="affilation_dialog"class="dialog-label">Afiliación</label>
+                    <input id="affilation_dialog" class="dialog-field" type="text" required
+                        name="affilation_dialog" [(ngModel)]="affiliation.code" #code="ngModel">
+                </div>
+            </div>
+        </div>
+        <div class="p-field">
+            <label for="phone_dialog"class="dialog-label">Teléfono</label>
+            <input id="phone_dialog" class="dialog-field" type="text"
+                required pattern="[0-9]{1,10}"
+                name="phone_dialog" [(ngModel)]="patient.phone" #phone="ngModel">
+            <div *ngIf="phone.invalid && (phone.dirty || phone.touched)"
+                class="alert alert-danger">
+            <div *ngIf="phone.errors!['required']">
+                Campo requerido.
+            </div>
+            <div *ngIf="phone.errors!['pattern']">
+                Solo números son permitidos.
+            </div>
+            </div>
+        </div>
+        <div class="p-field">
+            <label for="email_dialog"class="dialog-label">Correo electrónico</label>
+            <input id="email_dialog" class="dialog-field" type="text" style="text-transform: lowercase;"
+                name="email_dialog" [(ngModel)]="patient.email" #email="ngModel">
+        </div>
+        <div class="p-field">
+            <label for="patient_notes_dialog" class="dialog-label">Observaciones</label>
+            <input id="patient_notes_dialog" class="dialog-field" type="text" appUppercase
+                name="patient_notes_dialog" [(ngModel)]="patient.notes" #notes="ngModel">
+        </div>
+    </ng-template>
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="Cancelar" icon="pi pi-times"
+            class="p-button-text" (click)="hidePatientDialog()"></button>
+        <button pButton pRipple label="Guardar" icon="pi pi-check"
+            class="p-button-text" (click)="savePatient()"></button>
+    </ng-template>
+</p-dialog>
+
+<p-dialog [(visible)]="drugDialog" [style]="{width: '850px'}"
+    header="DATOS DEL MEDICAMENTO" [modal]="true" styleClass="p-fluid">
+    <ng-template pTemplate="content">
+        <div class="p-field">
+            <label for="code_dialog"class="dialog-label">Código</label>
+            <input id="code_dialog" class="dialog-field" type="text"
+                appUppercase required autofocus
+                name="code_dialog" [(ngModel)]="drug.code" #code="ngModel">
+            <div *ngIf="code.invalid && (code.dirty || code.touched)"
+                class="alert alert-danger">
+                <div *ngIf="code.errors!['required']">
+                    Campo requerido.
+                </div>
+            </div>
+        </div>
+        <div class="p-field">
+            <label for="drug_name_dialog"class="dialog-label">Nombre</label>
+            <input id="drug_name_dialog" class="dialog-field" type="text"
+                appUppercase required pattern="[ a-zA-Z]+"
+                name="drug_name_dialog" [(ngModel)]="drug.name" #name="ngModel">
+            <div *ngIf="name.invalid && (name.dirty || name.touched)"
+                class="alert alert-danger">
+                <div *ngIf="name.errors!['required']">
+                    Campo requerido.
+                </div>
+                <div *ngIf="name.errors!['pattern']">
+                    Solo letras son permitidas.
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="p-field">
+                    <label for="medida"class="dialog-label">Medida</label>
+                    <input id="medida" class="dialog-field" type="number"
+                        required pattern="[0-9]+"
+                        name="medida" [(ngModel)]="drug.measure" #measure="ngModel">
+                    <div *ngIf="measure.invalid && (measure.dirty || measure.touched)"
+                        class="alert alert-danger">
+                        <div *ngIf="measure.errors!['required']">
+                            Campo requerido.
+                        </div>
+                        <div *ngIf="measure.errors!['pattern']">
+                            Solo números son permitidos.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="p-field">
+                    <label for="unit_dialog"class="dialog-label">Unidades</label>
+                    <input id="unit_dialog" class="dialog-field" type="text"
+                        style="text-transform: lowercase;" required
+                        name="unit_dialog" [(ngModel)]="drug.unit" #code="ngModel">
+                </div>
+            </div>
+        </div>
+        <div class="p-field">
+            <label for="brand_dialog"class="dialog-label">Marca</label>
+            <input id="brand_dialog" class="dialog-field" type="text" appUppercase
+                name="brand_dialog" [(ngModel)]="drug.brand" #brand="ngModel">
+        </div>
+        <div class="p-field">
+            <label for="description_dialog" class="dialog-label">Descripción</label>
+            <input id="description_dialog" class="dialog-field" type="text" appUppercase
+                name="description_dialog" [(ngModel)]="drug.description" #description="ngModel">
+        </div>
+        <div class="p-field">
+            <label for="classification_dialog" class="dialog-label">Clasificación</label>
+            <input id="classification_dialog" class="dialog-field" type="text" appUppercase
+                name="classification_dialog" [(ngModel)]="drug.classification" #classification="ngModel">
+        </div>
+        <div class="p-field">
+            <label for="drug_notes_dialog" class="dialog-label">Observaciones</label>
+            <input id="drug_notes_dialog" class="dialog-field" type="text" appUppercase
+                name="drug_notes_dialog" [(ngModel)]="drug.notes" #notes="ngModel">
+        </div>
+    </ng-template>
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="Cancelar" icon="pi pi-times"
+            class="p-button-text" (click)="hideDrugDialog()"></button>
+        <button pButton pRipple label="Guardar" icon="pi pi-check"
+            class="p-button-text" (click)="saveDrug()"></button>
+    </ng-template>
+</p-dialog>
+
+<p-confirmDialog [style]="{width: '850px'}"></p-confirmDialog>
+
+-->

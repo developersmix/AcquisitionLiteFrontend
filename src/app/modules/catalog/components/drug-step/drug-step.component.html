@@ -1,0 +1,231 @@
+<div class="card">
+    <!-- CONTROL -->
+    <div class="row">
+        <div class="col-sm-8 d-flex justify-content-start">
+            <div class="input-group">
+                <div class="input-group criteria">
+                    <input id="criteria" class="form-control" type="text"
+                        style="font-weight: bold;" required autofocus pattern="[A-Za-z0-9.-_ ]{4,}"
+                        name="criteria" [(ngModel)]="criteria" #validator="ngModel">
+                    <div class="input-group-append">
+                        <button id="searchByCode" class="btn btn-outline-primary fa fa-search"
+                            (click)="findByCriteriaInColumns()">&emsp;Buscar
+                        </button>
+                    </div>
+                    <div *ngIf="validator.invalid && submittedSearch" class="alert alert-danger">
+                        <div *ngIf="validator.errors!['required']">
+                            Dato requerido.
+                        </div>
+                        <div *ngIf="validator.errors!['pattern']">
+                            Mínimo 4 caracteres a buscar
+                        </div>
+                    </div>
+                </div> 
+            </div>
+        </div>
+        <div class="col-sm-3 d-flex justify-content-end">
+            <button pButton pRipple label="Nuevo" icon="pi pi-plus"
+                class="p-button-success p-mr-2" (click)="showNewDialog()">
+            </button>
+        </div>
+    </div>
+    <!-- SELECTED ITEM -->
+    <div class="table-responsive-sm">
+        <table id="selectedItemTable" class="table table-bordered">
+            <thead class="table-active">
+                <tr>
+                    <th>Código</th>
+                    <th>Descripción</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="table-success">
+                    <td>{{drug.code}}</td>
+                    <td>{{drug.description}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <!-- QUANTITY AND UNITS REQUIRED -->
+    <form #quantityForm="ngForm">
+        <div class="form-row">
+            <div class="col-sm-8 d-flex justify-content-start">
+                <div class="form-group">
+                    <label for="quantity">Cantidad solicitada</label>
+                    <input id="quantity" class="form-control" type="number" required
+                        name="quantity" [(ngModel)]="prescription.quantity" #quantity="ngModel">
+                    <div *ngIf="quantity.invalid && submittedQuantity" class="alert alert-danger">
+                        <div *ngIf="quantity.errors!['required']">
+                            Dato requerido.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+    <!-- NAVAGATION OPTIONS -->
+    <div class="p-grid p-nogutter p-justify-between">
+        <p-button label="Regresar" (onClick)="prevPage()" icon="pi pi-angle-left"></p-button>
+        <p-button label="Siguiente" (onClick)="nextPage(quantityForm)" icon="pi pi-angle-right" iconPos="right"></p-button>
+    </div>
+</div>
+
+<!-- DIALOG SELECT DRUG -->
+<p-dialog [(visible)]="showTableDrugDialog" [style]="{width: '1000px'}" header="MEDICAMENTOS" [modal]="true"
+    styleClass="p-fluid">
+    <p-table #dt [value]="drugs" [rows]="5" [paginator]="true" [rowsPerPageOptions]="[5,10,25,50]"
+        [filterDelay]="0" [rowHover]="true" dataKey="id"
+        [globalFilterFields]="['id', 'code', 'description']" selectionMode="single" [(selection)]="selectedDrug"
+        currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} registros"
+        [showCurrentPageReport]="true" (onRowSelect)="onRowSelect($event)" (onRowUnselect)="onRowUnselect($event)"
+        styleClass="p-datatable-striped p-datatable-responsive-demo p-datatable-sm">
+        <ng-template pTemplate="header">
+            <tr>
+                <th style="width: 35%;" pSortableColumn="code">
+                    Código<p-sortIcon field="code"></p-sortIcon>
+                </th>
+                <th pSortableColumn="description">
+                    Descripción<p-sortIcon field="description"></p-sortIcon>
+                </th>
+                <th *ngIf="isAdmin">Opciones</th>
+            </tr>
+            <tr>
+                <th>
+                    <span class="p-input-icon-left">
+                        <i class="pi pi-search"></i>
+                        <input pInputText type="text" class="p-column-filter"
+                            (input)="dt.filter($any($event.target).value, 'code', 'startsWith')">
+                    </span>
+                </th>
+                <th>
+                    <span class="p-input-icon-left" style="width: 100%">
+                        <i class="pi pi-search"></i>
+                        <input pInputText type="text" class="p-column-filter" style="width: 100%"
+                            (input)="dt.filter($any($event.target).value, 'description', 'contains')">
+                    </span>
+                </th>
+                <th *ngIf="isAdmin"></th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-drug>
+            <tr [pSelectableRow]="drug">
+                <td>{{drug.code}}</td>
+                <td>
+                    <div>{{drug.description}}</div>
+                </td>
+                <td *ngIf="isAdmin">
+                    <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-primary p-mr-2"
+                        (click)="editDrug(drug)">
+                    </button>
+                    <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger"
+                        (click)="deleteDrug(drug)">
+                    </button>
+                </td>
+            </tr>
+        </ng-template>
+        <!--
+        <ng-template pTemplate="summary">
+            <div class="p-d-flex p-ai-center p-jc-between">
+                En total hay {{drugs ? drugs.length : 0 }} requisiciones.
+            </div>      
+        </ng-template>
+        -->
+    </p-table>
+</p-dialog>
+
+<!-- DIALOG NEW ITEM -->
+<p-dialog [(visible)]="showNewDrugDialog" [style]="{width: '850px'}" header="DATOS DEL MEDICAMENTO" [modal]="true"
+    styleClass="p-fluid">
+    <form #newDrugForm="ngForm">
+        <div class="p-field">
+            <label for="code_dialog" class="dialog-label">Código</label>
+            <input id="code_dialog" class="dialog-field" type="text"
+                required autofocus
+                name="code_dialog" [(ngModel)]="newDrug.code" #code="ngModel"
+                [ngModel]="newDrug.code" 
+                (ngModelChange)="newDrug.code = $event.toUpperCase()">
+            <div *ngIf="code.invalid && submittedNew" class="alert alert-danger">
+                <div *ngIf="code.errors!['required']">
+                    Dato requerido.
+                </div>
+            </div>
+        </div>
+        <div class="p-field">
+            <label for="description_dialog" class="dialog-label">Descripción</label>
+            <textarea id="description_dialog" class="dialog-field overflow-auto" rows="1"
+                required
+                name="description_dialog overflow-auto" [(ngModel)]="newDrug.description" #description="ngModel"
+                [ngModel]="newDrug.description" 
+                (ngModelChange)="newDrug.description = $event.toUpperCase()">
+            </textarea>
+            <div *ngIf="description.invalid && submittedNew" class="alert alert-danger">
+                <div *ngIf="description.errors!['required']">
+                    Dato requerido.
+                </div>
+            </div>
+        </div>
+        <!--
+        <div class="p-field">
+            <label for="drug_name_dialog" class="dialog-label">Nombre</label>
+            <input id="drug_name_dialog" class="dialog-field" type="text" appUppercase required pattern="[ a-zA-Z]+"
+                name="drug_name_dialog" [(ngModel)]="newDrug.name" #name="ngModel">
+            <div *ngIf="name.invalid && submitted" class="alert alert-danger">
+                <div *ngIf="name.errors!['required']">
+                    Campo requerido.
+                </div>
+                <div *ngIf="name.errors!['pattern']">
+                    Solo letras son permitidas.
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="p-field">
+                    <label for="medida" class="dialog-label">Medida</label>
+                    <input id="medida" class="dialog-field" type="number" required pattern="[0-9]+" name="medida"
+                        [(ngModel)]="newDrug.measure" #measure="ngModel">
+                    <div *ngIf="measure.invalid && submitted" class="alert alert-danger">
+                        <div *ngIf="measure.errors!['required']">
+                            Campo requerido.
+                        </div>
+                        <div *ngIf="measure.errors!['pattern']">
+                            Solo números son permitidos.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="p-field">
+                    <label for="unit_dialog" class="dialog-label">Unidades</label>
+                    <input id="unit_dialog" class="dialog-field" type="text" style="text-transform: lowercase;" required
+                        name="unit_dialog" [(ngModel)]="newDrug.unit" #code="ngModel">
+                </div>
+            </div>
+        </div>
+        <div class="p-field">
+            <label for="brand_dialog" class="dialog-label">Marca</label>
+            <input id="brand_dialog" class="dialog-field" type="text" appUppercase name="brand_dialog"
+                [(ngModel)]="newDrug.brand" #brand="ngModel">
+        </div>
+        <div class="p-field">
+            <label for="classification_dialog" class="dialog-label">Clasificación</label>
+            <input id="classification_dialog" class="dialog-field" type="text" appUppercase name="classification_dialog"
+                [(ngModel)]="newDrug.classification" #classification="ngModel">
+        </div>
+        <div class="p-field">
+            <label for="drug_notes_dialog" class="dialog-label">Observaciones</label>
+            <input id="drug_notes_dialog" class="dialog-field" type="text" appUppercase name="drug_notes_dialog"
+                [(ngModel)]="newDrug.notes" #notes="ngModel">
+        </div>
+        -->
+    </form>
+    <div class="p-grid p-nogutter p-justify-between">
+        <button pButton pRipple label="Cancelar" icon="pi pi-times"
+            class="p-button-text" (click)="hideNewDialog()"></button>
+        <button pButton pRipple label="Guardar" icon="pi pi-check"
+            class="p-button-text" (click)="saveDrug(newDrugForm)"></button>
+    </div>
+</p-dialog>
+
+<!-- DIALOG CONFIRM -->
+<p-confirmDialog [style]="{width: '850px'}"></p-confirmDialog>

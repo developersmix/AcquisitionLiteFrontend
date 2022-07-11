@@ -1,0 +1,109 @@
+/* *****  FORMS ***** */
+
+label {
+    color: #0099CC;
+}
+
+input {
+    text-transform: uppercase;
+}
+
+.d-flex {
+    margin-top: 10px;
+}
+
+.label {
+    margin-top: 5px;
+    text-align: left;
+}
+
+.bottom {
+    margin-top: 10px;
+}
+.col {
+  justify-content: center;
+}
+.p-button-text {
+    max-width: 200px;
+}
+
+.ng-valid[required], .ng-valid.required  {
+    border-image: linear-gradient(to right, #ff0000, #f87171);
+    border-image-slice: 1;
+}
+
+.ng-invalid:not(form)  {
+    border-image: linear-gradient(to right, #ff0000, #f87171);
+    border-image-slice: 1;
+}
+
+/* *****  DIALOG ***** */
+
+$primary: #11998e;
+$secondary: #38ef7d;
+$white: #fff;
+$gray: #9b9b9b;
+.p-field {
+  position: relative;
+  padding: 15px 50px 0 50px;
+  margin-top: 10px;
+  width: 100%;
+}
+
+.dialog-field {
+  font-family: inherit;
+  width: 100%;
+  border: 0;
+  border-bottom: 2px solid $gray;
+  outline: 0;
+  font-size: 18px;
+  color: $primary;
+  padding: 7px 0;
+  background: transparent;
+  transition: border-color 0.2s;
+
+  &::placeholder {
+    color: transparent;
+  }
+
+  &:placeholder-shown ~ .dialog-label {
+    font-size: 1.3rem;
+    cursor: text;
+    top: 20px;
+  }
+}
+
+.dialog-label {
+  position: absolute;
+  top: 0;
+  display: block;
+  transition: 0.2s;
+  font-size: 1rem;
+  color: $gray;
+}
+
+.dialog-field:focus {
+  ~ .dialog-label {
+    position: absolute;
+    top: 0;
+    display: block;
+    transition: 0.2s;
+    font-size: 1rem;
+    color: $primary;
+    font-weight:700;    
+  }
+    padding-bottom: 6px;  
+    font-weight: 700;
+    border-width: 3px;
+    border-image: linear-gradient(to right, $primary,$secondary);
+    border-image-slice: 1;
+}
+/* reset input */
+.dialog-field{
+  &:required,&:invalid { box-shadow:none; }
+}
+
+.p-invalid {
+    border-image: linear-gradient(to right, #ff0000, #f87171);
+    border-image-slice: 1;
+}

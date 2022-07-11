@@ -1,0 +1,201 @@
+<div class="card">
+    <!-- CONTROL -->
+    <div class="row">
+        <div class="col-sm-8 d-flex justify-content-start">
+            <div class="input-group">
+                <div class="input-group criteria">
+                    <input id="criteria" class="form-control" type="text"
+                        style="font-weight: bold;" required autofocus
+                        pattern="[A-Za-z0-9.-_ ]{4,}"
+                        name="criteria" [(ngModel)]="criteria" #validator="ngModel">
+                    <div class="input-group-append">
+                        <button id="searchByCode" class="btn btn-outline-primary fa fa-search"
+                            (click)="findByCriteriaInColumns()">&emsp;Buscar
+                        </button>
+                    </div>
+                    <div *ngIf="validator.invalid && submittedSearch" class="alert alert-danger">
+                        <div *ngIf="validator.errors!['required']">
+                            Dato requerido.
+                        </div>
+                        <div *ngIf="validator.errors!['pattern']">
+                            Mínimo 4 caracteres a buscar
+                        </div>
+                    </div>
+                </div> 
+            </div>
+        </div>
+        <div class="col-sm-3 d-flex justify-content-end">
+            <button pButton pRipple label="Nuevo" icon="pi pi-plus"
+                class="p-button-success p-mr-2" (click)="showNewDialog()">
+            </button>
+        </div>
+    </div>
+    <!-- SELECTED ITEM -->
+    <div class="table-responsive-sm">
+        <table id="selectedItemTable" class="table table-bordered">
+            <thead class="table-active">
+                <tr>
+                    <th>Nombre</th>
+                    <th>Ubicación</th>
+                    <th>Teléfono</th>
+                    <th>Extensión</th>
+                    <th>Observaciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="table-success">
+                    <td>{{office.name}}</td>
+                    <td>{{office.location}}</td>
+                    <td>{{office.phone}}</td>
+                    <td>{{office.extension}}</td>
+                    <td>{{office.notes}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="p-grid p-nogutter p-justify-between">
+        <p-button label="Regresar" (onClick)="prevPage()" icon="pi pi-angle-left"></p-button>
+        <p-button label="Siguiente" (onClick)="nextPage()" icon="pi pi-angle-right" iconPos="right"></p-button>
+    </div>
+</div>
+
+<!-- DIALOG SELECT OFFICE -->
+<p-dialog [(visible)]="showTableOfficeDialog" [style]="{width: '1200px'}" header="MEDICAMENTOS" [modal]="true"
+    styleClass="p-fluid">
+    <p-table #dt [value]="offices" [rows]="5" [paginator]="true" [rowsPerPageOptions]="[5,10,25,50]"
+        [filterDelay]="0" [rowHover]="true" dataKey="id"
+        [globalFilterFields]="['id', 'code', 'description']" selectionMode="single" [(selection)]="selectedOffice"
+        currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} registros"
+        [showCurrentPageReport]="true" (onRowSelect)="onRowSelect($event)" (onRowUnselect)="onRowUnselect($event)"
+        styleClass="p-datatable-striped p-datatable-responsive-demo p-datatable-sm">
+        <ng-template pTemplate="header">
+            <tr>
+                <th pSortableColumn="name">
+                    Nombre<p-sortIcon field="name"></p-sortIcon>
+                </th>
+                <th pSortableColumn="location">
+                    Ubicación<p-sortIcon field="location"></p-sortIcon>
+                </th>
+                <th>Teléfono<p-sortIcon field="phone"></p-sortIcon></th>
+                <th>Extensión<p-sortIcon field="extension"></p-sortIcon></th>
+                <th>Observaciones<p-sortIcon field="notes"></p-sortIcon></th>
+                <th *ngIf="isAdmin" style="width: 10%">Opciones</th>
+            </tr>
+            <tr>
+                <th>
+                    <span class="p-input-icon-left">
+                        <i class="pi pi-search"></i>
+                        <input pInputText type="text" class="p-column-filter"
+                            (input)="dt.filter($any($event.target).value, 'name', 'startsWith')">
+                    </span>
+                </th>
+                <th>
+                    <span class="p-input-icon-left" style="width: 100%">
+                        <i class="pi pi-search"></i>
+                        <input pInputText type="text" class="p-column-filter" style="width: 100%"
+                            (input)="dt.filter($any($event.target).value, 'location', 'contains')">
+                    </span>
+                </th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th *ngIf="isAdmin" style="width: 10%">&nbsp;</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-office>
+            <tr [pSelectableRow]="office">
+                <td>{{office.name}}</td>
+                <td>{{office.location}}</td>
+                <td>{{office.phone}}</td>
+                <td>{{office.extension}}</td>
+                <td>{{office.notes}}</td>
+                <td *ngIf="isAdmin" style="width: 10%">
+                    <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-primary p-mr-2"
+                        (click)="editOffice(office)">
+                    </button>
+                    <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger"
+                        (click)="deleteOffice(office)">
+                    </button>
+                </td>
+            </tr>
+        </ng-template>
+        <!--
+        <ng-template pTemplate="summary">
+            <div class="p-d-flex p-ai-center p-jc-between">
+                En total hay {{offices ? offices.length : 0 }} requisiciones.
+            </div>      
+        </ng-template>
+        -->
+    </p-table>
+</p-dialog>
+
+
+<!-- DIALOG CREATE -->
+<p-dialog [(visible)]="showNewOfficeDialog" [style]="{width: '850px'}" header="DATOS DEL SERVICIO" [modal]="true"
+    styleClass="p-fluid">
+    <form #officeForm="ngForm">
+        <div class="p-field">
+            <label for="name_dialog" class="dialog-label">Nombre</label>
+            <input id="name_dialog" class="dialog-field" type="text"
+                required autofocus pattern="[A-Za-z- ]{8,}"
+                name="name_dialog" [(ngModel)]="newOffice.name" #name="ngModel"
+                [ngModel]="newOffice.name" 
+                (ngModelChange)="newOffice.name = $event.toUpperCase()">
+            <div *ngIf="name.invalid && submittedNew" class="alert alert-danger">
+                <div *ngIf="name.errors!['required']">
+                    Dato requerido.
+                </div>
+                <div *ngIf="name.errors!['pattern']">
+                    Mínimo 8 caracteres a buscar
+                </div>
+            </div>
+        </div>
+        <div class="p-field">
+            <label for="location_dialog" class="dialog-label">Ubicación</label>
+            <input id="location_dialog" class="dialog-field" type="text"
+                required pattern=".{4,}"
+                name="location_dialog" [(ngModel)]="newOffice.location" #location="ngModel"
+                [ngModel]="newOffice.location" 
+                (ngModelChange)="newOffice.location = $event.toUpperCase()">
+                <div *ngIf="location.invalid && submittedNew" class="alert alert-danger">
+                    <div *ngIf="location.errors!['required']">
+                        Dato requerido.
+                    </div>
+                    <div *ngIf="location.errors!['pattern']">
+                        Mínimo 4 caracteres a buscar
+                    </div>
+                </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="p-field">
+                    <label for="phone_dialog" class="dialog-label">Teléfono</label>
+                    <input id="phone_dialog" class="dialog-field" type="number" pattern="[0-9]+"
+                        name="phone_dialog" [(ngModel)]="newOffice.phone" #phone="ngModel">
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="p-field">
+                    <label for="extension_dialog" class="dialog-label">Extensión</label>
+                    <input id="extension_dialog" class="dialog-field" type="number" pattern="[0-9]+"
+                        name="extension_dialog" [(ngModel)]="newOffice.extension" #extension="ngModel">
+                </div>
+            </div>
+        </div>
+        <div class="p-field">
+            <label for="notes_dialog" class="dialog-label">Observaciones</label>
+            <input id="notes_dialog" class="dialog-field" type="text" appUppercase
+                name="notes_dialog" [(ngModel)]="newOffice.notes" #notes="ngModel"
+                [ngModel]="newOffice.notes" 
+                (ngModelChange)="newOffice.notes = $event.toUpperCase()">
+        </div>
+    </form>
+    <div class="p-grid p-nogutter p-justify-between">
+        <button pButton pRipple label="Cancelar" icon="pi pi-times"
+            class="p-button-text" (click)="hideNewDialog()"></button>
+        <button pButton pRipple label="Guardar" icon="pi pi-check"
+            class="p-button-text" (click)="saveOffice(officeForm)"></button>
+    </div>
+</p-dialog>
+<!-- DIALOG CONFIRM -->
+<p-confirmDialog [style]="{width: '850px'}"></p-confirmDialog>

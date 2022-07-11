@@ -1,0 +1,21 @@
+<div class="card">
+    <h4>Requisición</h4>
+    <p>Consecutivo: {{requisition.consecutive}}</p>
+    
+    <h4>Receta</h4>
+    <p>Serie: {{prescription.serie}}</p>
+    <p>Código del medicamento: {{drug.code}}</p>
+    <p>Descripción del medicamento: {{drug.description}}</p>
+    
+    <h4>Servicio</h4>
+    <p>Nombre: {{office.name}}</p>
+    
+    <h4>Paciente</h4>
+    <p>Nombre: {{patient.name}}</p>
+    <p>RFC: {{patient.rfc}} / {{affiliation.code}}</p>
+    <p>Teléfono: {{patient.phone}}</p>
+    <div class="p-grid p-nogutter p-justify-between">
+        <p-button label="Regresar" (onClick)="prevPage()" icon="pi pi-angle-left"></p-button>
+        <p-button label="Guardar" (onClick)="saveOnCascade()" icon="pi pi-angle-right" iconPos="right" styleClass="p-button-success"></p-button>
+    </div>
+</div>

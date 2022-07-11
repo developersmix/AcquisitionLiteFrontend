@@ -1,0 +1,95 @@
+<div class="card">
+    <p-table #dt [value]="requisitionSerializedList" [rows]="5" [paginator]="true" [rowsPerPageOptions]="[5,10,25,50]"
+        [filterDelay]="0" [rowHover]="true" dataKey="requisitionId" 
+        [globalFilterFields]="['consecutive', 'patient', 'date']"
+        selectionMode="single" [(selection)]="selectedRequisitionSerialized"
+        currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} registros"
+        [showCurrentPageReport]="true"  (onRowSelect)="onRowSelect($event)" (onRowUnselect)="onRowUnselect($event)"
+        styleClass="p-datatable-striped p-datatable-responsive-demo p-datatable-sm"
+        [style]="{width:'100%'}">
+        <ng-template pTemplate="header">
+            <tr>
+                <th pSortableColumn="consecutive" style="width: 80px;">
+                    Cons.<p-sortIcon field="consecutive"></p-sortIcon>
+                </th>
+                <th pSortableColumn="serie" style="width: 100px;">
+                    Receta<p-sortIcon field="serie"></p-sortIcon>
+                </th>
+                <th pSortableColumn="patient" style="width: 200px;">
+                    Paciente<p-sortIcon field="patient"></p-sortIcon>
+                </th>
+                <th pSortableColumn="rfc" style="width: 140px;">
+                    RFC<p-sortIcon field="rfc"></p-sortIcon>
+                </th>
+                <th pSortableColumn="description" style="width: 300px;">
+                    Medicamento<p-sortIcon field="description"></p-sortIcon>
+                </th>
+                <th pSortableColumn="quantity" style="width: 100px;">
+                    Cantidad<p-sortIcon field="quantity"></p-sortIcon>
+                </th>
+                <th pSortableColumn="date" style="width: 140px;">
+                    Fecha<p-sortIcon field="date"></p-sortIcon>
+                </th>
+                <th pSortableColumn="tracking" style="width: 100px;">
+                    Rastreo<p-sortIcon field="tracking"></p-sortIcon>
+                </th>
+                <th pSortableColumn="status" style="width: 160px;">
+                    Status<p-sortIcon field="status"></p-sortIcon>
+                </th>
+            </tr>
+            <tr>
+                <th style="width: 80px;">
+                    <input pInputText type="text" (input)="dt.filter($any($event.target).value, 'consecutive', 'contains')"
+                    placeholder="" class="p-column-filter">
+                </th>
+                <th style="width: 100px;">
+                    <input pInputText type="text" (input)="dt.filter($any($event.target).value, 'serie', 'contains')"
+                        placeholder="" class="p-column-filter">
+                </th>
+                <th style="width: 200px;">
+                    <input pInputText type="text" (input)="dt.filter($any($event.target).value, 'patient', 'contains')"
+                    placeholder="" class="p-column-filter">
+                </th>
+                <th style="width: 140px;">
+                    <input pInputText type="text" (input)="dt.filter($any($event.target).value, 'rfc', 'contains')"
+                    placeholder="" class="p-column-filter">
+                </th>
+                <th style="width: 300px;">
+                    <input pInputText type="text" (input)="dt.filter($any($event.target).value, 'description', 'contains')"
+                        placeholder="" class="p-column-filter" style="width: 100%">
+                </th>
+                <th style="width: 100px;">&nbsp;</th>
+                <th style="width: 140px;">
+                    <input pInputText type="text" (input)="dt.filter($any($event.target).value, 'date', 'startsWith')"
+                        placeholder="" class="p-column-filter" style="width: 100%">
+                </th>
+                <th style="width: 100px;">
+                    <input pInputText type="text" (input)="dt.filter($any($event.target).value, 'tracking', 'startsWith')"
+                        placeholder="" class="p-column-filter" style="width: 100px;">
+                </th>
+                <th style="width: 160px;">
+                    <input pInputText type="text" (input)="dt.filter($any($event.target).value, 'status', 'startsWith')"
+                        placeholder="" class="p-column-filter" style="width: 100px;">
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-requisitionSerialized>
+            <tr [pSelectableRow]="requisitionSerialized">
+                <td style="width: 80px;">{{requisitionSerialized.consecutive}}</td>
+                <td style="width: 100px;">{{requisitionSerialized.serie}}</td>
+                <td style="width: 200px;">{{requisitionSerialized.patientName}}</td>
+                <td style="width: 140px;">{{requisitionSerialized.rfc}}</td>
+                <td style="width: 300px;">{{requisitionSerialized.description}}</td>
+                <td style="width: 100px;">{{requisitionSerialized.quantity}}</td>
+                <td style="width: 140px;">{{requisitionSerialized.date}}</td>
+                <td style="width: 100px;">{{requisitionSerialized.trackingNumber}}</td>
+                <td style="width: 160px;">{{requisitionSerialized.status}}
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="summary">
+            <div class="p-d-flex p-ai-center p-jc-between">
+                En total hay {{requisitionSerializedList ? requisitionSerializedList.length : 0 }} requisiciones.
+            </div>
+        </ng-template>
+    </p-table>
+</div>
